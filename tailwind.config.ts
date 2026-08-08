@@ -18,7 +18,9 @@ const config: Config = {
         floating: "0 16px 36px -18px rgba(0, 87, 255, 0.34)"
       },
       fontFamily: {
-        display: ["var(--font-jakarta)", "sans-serif"],
+        display: ["var(--font-outfit)", "var(--font-jakarta)", "sans-serif"],
+        bebas: ["var(--font-bebas)", "sans-serif"],
+        outfit: ["var(--font-outfit)", "sans-serif"],
         sans: ["var(--font-inter)", "sans-serif"]
       },
       borderRadius: {
