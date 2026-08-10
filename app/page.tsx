@@ -1,5 +1,8 @@
+import AnnouncementBanner from "@/components/AnnouncementBanner";
 import Navbar from "@/components/Navbar";
 import HeroCarousel from "@/components/HeroCarousel";
+import CategoryGrid from "@/components/CategoryGrid";
+import ContentHighlightCard from "@/components/ContentHighlightCard";
 import HomeSections from "@/components/HomeSections";
 import StatsSection from "@/components/StatsSection";
 import Footer from "@/components/Footer";
@@ -22,9 +25,12 @@ export default async function HomePage() {
 
   return (
     <>
+      <AnnouncementBanner />
       <Navbar />
       <main id="top">
         <HeroCarousel />
+        <CategoryGrid />
+        <ContentHighlightCard />
         <HomeSections />
         <StatsSection />
       </main>
@@ -33,3 +39,4 @@ export default async function HomePage() {
     </>
   );
 }
+

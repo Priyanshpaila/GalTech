@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X, HelpCircle, User } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,7 +13,6 @@ type NavigationItem = CompanyDetails["navigation"][number];
 export default function Navbar() {
   const pathname = usePathname();
   const [navigation, setNavigation] = useState<NavigationItem[]>([]);
-  const [brand, setBrand] = useState("GALTech");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [desktopDropdown, setDesktopDropdown] = useState<string | null>(null);
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
@@ -23,7 +22,6 @@ export default function Navbar() {
     void import("@/config/companyDetails").then(({ companyDetails }) => {
       if (!mounted) return;
       setNavigation([...companyDetails.navigation]);
-      setBrand(companyDetails.branding.shortName);
     });
     return () => {
       mounted = false;
@@ -34,42 +32,35 @@ export default function Navbar() {
     if (href === "/") return pathname === "/";
     return pathname === href || pathname.startsWith(`${href}/`);
   };
+
   const closeMobile = () => {
     setMobileOpen(false);
     setMobileDropdown(null);
   };
 
-  const navItemClass =
-    "flex h-11 items-center justify-center rounded-button px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand";
-
   return (
-    <header
-      className="
-    sticky top-0 z-50
-    border-b border-slate-200
-    bg-white
-    text-ink
-  "
-    >
+    <header className="sticky top-0 left-0 right-0 z-50 bg-[#ffffff] text-[#2d2c2b] border-b border-[#e2ded9] shadow-sm">
       <nav
-        className="page-shell flex h-[76px] items-center justify-between"
-        aria-label="Primary navigation"
+        className="page-shell flex h-[72px] items-center justify-between"
+        aria-label="Headspace Primary navigation"
       >
+        {/* BRAND LOGO: galtech-logo.png */}
         <Link
           href="/"
-          className="group flex items-center rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
-          aria-label={`${brand} home`}
+          className="group flex items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1d4ed8]"
+          aria-label="GALTech Home"
         >
           <Image
             src="/galtech-logo.png"
             alt="GALTech Infosolutions"
-            width={1080}
-            height={356}
+            width={160}
+            height={52}
             priority
-            className="h-auto w-[156px] mix-blend-multiply sm:w-[178px]"
+            className="h-9 w-auto object-contain"
           />
         </Link>
 
+        {/* Center Desktop Navigation Links (Headspace Apercu Weight 500, #2d2c2b) */}
         <div className="hidden items-center gap-1 xl:flex">
           {navigation.map((item) => {
             const hasChildren = item.children.length > 0;
@@ -79,10 +70,10 @@ export default function Navbar() {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`${navItemClass} ${
+                  className={`flex h-10 items-center justify-center rounded-full px-4 text-base font-medium transition-colors hover:bg-[#f9f6f0] hover:text-[#000000] ${
                     isCurrent(item.href)
-                      ? "bg-brand/10 text-brand"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-brand"
+                      ? "bg-[#f9f6f0] text-[#1d4ed8] font-bold"
+                      : "text-[#2d2c2b]"
                   }`}
                 >
                   {item.label}
@@ -104,18 +95,17 @@ export default function Navbar() {
                   aria-haspopup="menu"
                   aria-expanded={open}
                   onClick={() => setDesktopDropdown(open ? null : item.label)}
-                  className={`${navItemClass} ${
+                  className={`flex h-10 items-center justify-center rounded-full px-4 text-base font-medium transition-colors hover:bg-[#f9f6f0] hover:text-[#000000] ${
                     open || isCurrent(item.href)
-                      ? "bg-brand/10 text-brand"
-                      : "text-slate-700 hover:bg-slate-100 hover:text-brand"
+                      ? "bg-[#f9f6f0] text-[#1d4ed8] font-bold"
+                      : "text-[#2d2c2b]"
                   }`}
                 >
                   {item.label}
-
                   <ChevronDown
                     aria-hidden="true"
-                    className={`size-4 transition-transform ${
-                      open ? "rotate-180" : ""
+                    className={`ml-1 size-4 transition-transform duration-200 ${
+                      open ? "rotate-180 text-[#1d4ed8]" : "text-[#44423f]"
                     }`}
                   />
                 </button>
@@ -123,18 +113,18 @@ export default function Navbar() {
                 <AnimatePresence>
                   {open && (
                     <motion.div
-                      initial={{ opacity: 0, y: -8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
+                      initial={{ opacity: 0, y: -6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.98 }}
                       transition={{ duration: 0.16 }}
                       role="menu"
-                      className="absolute left-0 top-full z-50 mt-2 min-w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white py-2 text-ink shadow-xl"
+                      className="absolute left-0 top-full z-50 mt-2 min-w-64 overflow-hidden rounded-[20px] border border-[#e2ded9] bg-white py-2 text-[#2d2c2b] shadow-xl"
                     >
                       <Link
                         href={item.href}
                         role="menuitem"
                         onClick={() => setDesktopDropdown(null)}
-                        className="block border-b border-slate-100 px-5 py-3 text-sm font-bold text-brand hover:bg-slate-50"
+                        className="block border-b border-[#e2ded9] px-5 py-3 text-sm font-bold text-[#1d4ed8] hover:bg-[#f9f6f0]"
                       >
                         View all {item.label}
                       </Link>
@@ -145,7 +135,7 @@ export default function Navbar() {
                           href={child.href}
                           role="menuitem"
                           onClick={() => setDesktopDropdown(null)}
-                          className="block px-5 py-3 text-sm font-medium transition-colors hover:bg-slate-50 hover:text-brand"
+                          className="block px-5 py-3 text-sm font-medium text-[#44423f] transition-colors hover:bg-[#f9f6f0] hover:text-[#2d2c2b]"
                         >
                           {child.label}
                         </Link>
@@ -156,18 +146,39 @@ export default function Navbar() {
               </div>
             );
           })}
+        </div>
+
+        {/* Right Side: Log In, Help & Mindful Blue Pill Button (#1d4ed8, 800px radius) */}
+        <div className="hidden items-center gap-4 xl:flex">
+          <Link
+            href="/contact"
+            className="text-sm font-medium text-[#44423f] hover:text-[#2d2c2b] transition-colors flex items-center gap-1.5"
+          >
+            <HelpCircle className="size-4" />
+            <span>Help</span>
+          </Link>
 
           <Link
             href="/contact"
-            className="button-primary ml-3 inline-flex h-11 items-center justify-center bg-brand px-6 text-sm text-white hover:bg-sky"
+            className="text-sm font-medium text-[#44423f] hover:text-[#2d2c2b] transition-colors flex items-center gap-1.5"
           >
-            Enquire now
+            <User className="size-4" />
+            <span>Log In</span>
+          </Link>
+
+          {/* Headspace Primary Mindful Blue Pill CTA */}
+          <Link
+            href="/products"
+            className="button-pill-blue"
+          >
+            Try for Free
           </Link>
         </div>
 
+        {/* Mobile Hamburger Toggle */}
         <button
           type="button"
-          className="grid size-10 place-items-center rounded-button border border-slate-300 text-ink transition-colors hover:border-brand/35 hover:bg-brand/5 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand xl:hidden"
+          className="grid size-10 place-items-center rounded-full border border-[#e2ded9] bg-white text-[#2d2c2b] hover:bg-[#f9f6f0] transition-colors xl:hidden"
           aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
           aria-expanded={mobileOpen}
           onClick={() => setMobileOpen((value) => !value)}
@@ -180,6 +191,7 @@ export default function Navbar() {
         </button>
       </nav>
 
+      {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -187,9 +199,9 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.22 }}
-            className="overflow-hidden border-t border-slate-200 bg-white xl:hidden"
+            className="overflow-hidden border-t border-[#e2ded9] bg-white text-[#2d2c2b] xl:hidden"
           >
-            <div className="page-shell max-h-[calc(100vh-76px)] overflow-y-auto py-4">
+            <div className="page-shell max-h-[calc(100vh-76px)] overflow-y-auto py-6 space-y-2">
               {navigation.map((item) => {
                 const hasChildren = item.children.length > 0;
                 const expanded = mobileDropdown === item.label;
@@ -199,7 +211,11 @@ export default function Navbar() {
                       key={item.label}
                       href={item.href}
                       onClick={closeMobile}
-                      className={`block rounded-xl px-4 py-3.5 text-base font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand ${isCurrent(item.href) ? "bg-brand/10 text-brand" : "text-slate-800 hover:bg-slate-100 hover:text-brand"}`}
+                      className={`block rounded-2xl px-4 py-3 text-base font-semibold transition-colors ${
+                        isCurrent(item.href)
+                          ? "bg-[#f9f6f0] text-[#1d4ed8]"
+                          : "text-[#2d2c2b] hover:bg-[#f9f6f0]"
+                      }`}
                     >
                       {item.label}
                     </Link>
@@ -207,14 +223,14 @@ export default function Navbar() {
                 return (
                   <div
                     key={item.label}
-                    className="rounded-xl border border-transparent data-[open=true]:border-slate-200 data-[open=true]:bg-slate-50"
+                    className="rounded-2xl border border-transparent data-[open=true]:border-[#e2ded9] data-[open=true]:bg-[#f9f6f0]"
                     data-open={expanded}
                   >
                     <div className="flex items-center">
                       <Link
                         href={item.href}
                         onClick={closeMobile}
-                        className="flex-1 px-4 py-3.5 text-base font-semibold text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                        className="flex-1 px-4 py-3 text-base font-semibold text-[#2d2c2b]"
                       >
                         {item.label}
                       </Link>
@@ -225,11 +241,13 @@ export default function Navbar() {
                         onClick={() =>
                           setMobileDropdown(expanded ? null : item.label)
                         }
-                        className="mr-2 grid size-10 place-items-center rounded-lg text-slate-700 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                        className="mr-2 grid size-10 place-items-center rounded-xl text-[#44423f] hover:bg-white"
                       >
                         <ChevronDown
                           aria-hidden="true"
-                          className={`size-5 transition-transform ${expanded ? "rotate-180" : ""}`}
+                          className={`size-5 transition-transform ${
+                            expanded ? "rotate-180 text-[#1d4ed8]" : ""
+                          }`}
                         />
                       </button>
                     </div>
@@ -246,7 +264,7 @@ export default function Navbar() {
                               key={child.label}
                               href={child.href}
                               onClick={closeMobile}
-                              className="block rounded-lg px-3 py-2.5 text-sm text-slate-600 transition-colors hover:bg-white hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                              className="block rounded-xl px-3 py-2.5 text-sm font-medium text-[#44423f] transition-colors hover:bg-white hover:text-[#1d4ed8]"
                             >
                               {child.label}
                             </Link>
@@ -257,13 +275,22 @@ export default function Navbar() {
                   </div>
                 );
               })}
-              <Link
-                href="/contact"
-                onClick={closeMobile}
-                className="button-primary mt-4 inline-flex w-full items-center justify-center bg-brand px-5 text-white"
-              >
-                Enquire now
-              </Link>
+              <div className="pt-4 border-t border-[#e2ded9] flex flex-col gap-3">
+                <Link
+                  href="/products"
+                  onClick={closeMobile}
+                  className="button-pill-blue text-center w-full"
+                >
+                  Try for Free
+                </Link>
+                <Link
+                  href="/contact"
+                  onClick={closeMobile}
+                  className="button-pill-dark text-center w-full"
+                >
+                  Contact Sales
+                </Link>
+              </div>
             </div>
           </motion.div>
         )}
@@ -271,3 +298,4 @@ export default function Navbar() {
     </header>
   );
 }
+

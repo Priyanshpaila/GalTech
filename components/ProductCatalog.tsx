@@ -10,7 +10,7 @@ import type { CompanyDetails } from "@/config/companyDetails";
 type Product = CompanyDetails["products"][number];
 type Category = CompanyDetails["productCategories"][number];
 
-const allCategory = { id: "all", title: "All products" };
+const allCategory = { id: "all", title: "All Products" };
 
 export default function ProductCatalog() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -37,27 +37,128 @@ export default function ProductCatalog() {
     const nextUrl = id === "all" ? "/products" : `/products?category=${id}`;
     window.history.replaceState({}, "", nextUrl);
   };
+
   const filteredProducts = activeCategory === "all" ? products : products.filter((product) => product.category === activeCategory);
 
   return (
-    <section className="section-space bg-canvas">
+    <section className="section-space bg-[#f9f6f0]">
       <div className="page-shell">
-        <div className="flex flex-col gap-6 border-b border-slate-200 pb-8 lg:flex-row lg:items-end lg:justify-between">
-          <div><p className="eyebrow">Browse the portfolio</p><h2 className="mt-3 font-display text-3xl font-semibold tracking-[-0.05em] text-ink sm:text-4xl">Find the right technology for every space.</h2></div>
-          <p className="flex items-center gap-2 text-sm text-muted"><SlidersHorizontal aria-hidden="true" className="size-4 text-brand" />Filter by technology category</p>
+        <div className="flex flex-col gap-4 border-b border-[#e2ded9] pb-8 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p className="eyebrow mb-2">Browse the portfolio</p>
+            <h2 className="section-title">Find the right technology for every space.</h2>
+          </div>
+          <p className="flex items-center gap-2 text-xs font-semibold text-[#63605d]">
+            <SlidersHorizontal aria-hidden="true" className="size-4 text-[#1d4ed8]" />
+            Filter by technology category
+          </p>
         </div>
-        <div className="no-scrollbar mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Product categories">
-          {[allCategory, ...categories].map((category) => <button key={category.id} type="button" role="tab" aria-selected={activeCategory === category.id} onClick={() => chooseCategory(category.id)} className={`shrink-0 rounded-full border px-4 py-2.5 text-sm font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 ${activeCategory === category.id ? "border-brand bg-brand text-white" : "border-slate-200 bg-white text-slate-700 hover:border-brand/35 hover:text-brand"}`}>{category.title}</button>)}
+
+        {/* HEADSPACE FILTER PILLS (Active = #2d2c2b + white dot; Inactive = white bg + 1px border) */}
+        <div className="no-scrollbar mt-8 flex gap-3 overflow-x-auto pb-2" role="tablist" aria-label="Product categories">
+          {[allCategory, ...categories].map((category) => {
+            const isActive = activeCategory === category.id;
+            return (
+              <button
+                key={category.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => chooseCategory(category.id)}
+                className={`flex shrink-0 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  isActive
+                    ? "bg-[#2d2c2b] text-white shadow-[0_2px_0_rgba(65,61,69,0.25)]"
+                    : "border border-[#e2ded9] bg-white text-[#2d2c2b] hover:border-[#2d2c2b] hover:bg-[#f9f6f0]"
+                }`}
+              >
+                {isActive && <span className="size-2 rounded-full bg-white animate-pulse" />}
+                <span>{category.title}</span>
+              </button>
+            );
+          })}
         </div>
-        <div className="mt-4 flex items-center justify-between text-sm text-muted"><p><span className="font-semibold text-ink">{filteredProducts.length}</span> solutions shown</p><p className="hidden sm:block">Specifications and availability confirmed on enquiry</p></div>
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {filteredProducts.map((product, index) => <motion.article key={product.slug} initial={{ opacity: 0, y: reduceMotion ? 0 : 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: Math.min(index, 5) * 0.045 }} className="group overflow-hidden rounded-card border border-slate-200 bg-white shadow-enterprise transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-floating">
-            <Link href={`/products/${product.slug}`} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand"><div className="relative aspect-[1.45] overflow-hidden bg-slate-100"><Image src={product.image} alt={product.imageAlt} fill sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw" placeholder="blur" blurDataURL={product.blurDataURL} className="object-cover transition-transform duration-700 group-hover:scale-105" /><div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-navy/45 to-transparent" /><p className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold text-navy backdrop-blur-sm">{product.categoryLabel}</p></div></Link>
-            <div className="p-6"><div className="flex flex-wrap gap-2">{product.badges.slice(0, 2).map((badge) => <span key={badge} className="rounded-full bg-brand/8 px-2.5 py-1 text-xs font-bold text-brand">{badge}</span>)}</div><h3 className="mt-4 font-display text-2xl font-semibold tracking-[-0.045em] text-ink">{product.name}</h3><p className="mt-3 text-sm leading-6 text-muted">{product.shortDescription}</p><ul className="mt-5 space-y-2">{product.applications.slice(0, 2).map((application) => <li key={application} className="flex items-center gap-2 text-sm text-slate-700"><Check aria-hidden="true" className="size-4 text-mint" />{application}</li>)}</ul><Link href={`/products/${product.slug}`} className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-brand transition-colors hover:text-sky focus-visible:rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">View product details <ArrowUpRight aria-hidden="true" className="size-4" /></Link></div>
-          </motion.article>)}
+
+        <div className="mt-4 flex items-center justify-between text-xs text-[#63605d] font-medium">
+          <p><span className="font-bold text-[#2d2c2b]">{filteredProducts.length}</span> solutions available</p>
+          <p className="hidden sm:block">Specifications & local SLA support confirmed on enquiry</p>
         </div>
-        {!filteredProducts.length && <div className="mt-8 rounded-card border border-dashed border-slate-300 bg-white p-10 text-center"><p className="font-display text-xl font-semibold text-ink">No products in this category yet.</p><button type="button" onClick={() => chooseCategory("all")} className="mt-4 text-sm font-bold text-brand">View all products</button></div>}
+
+        {/* PRODUCT TILES (Soft Huggable Cards) */}
+        <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+          {filteredProducts.map((product, index) => (
+            <motion.article
+              key={product.slug}
+              initial={{ opacity: 0, y: reduceMotion ? 0 : 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: Math.min(index, 5) * 0.05 }}
+              className="group overflow-hidden rounded-[24px] border border-[#e2ded9] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all duration-300 hover:border-[#2d2c2b] hover:shadow-xl hover:-translate-y-1 flex flex-col justify-between"
+            >
+              <div>
+                <Link href={`/products/${product.slug}`} className="block overflow-hidden relative aspect-[1.45]">
+                  <Image
+                    src={product.image}
+                    alt={product.imageAlt}
+                    fill
+                    sizes="(min-width: 1280px) 33vw, 100vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/40 to-transparent" />
+                  <p className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3.5 py-1 text-xs font-bold text-[#2d2c2b] backdrop-blur-md shadow-sm">
+                    {product.categoryLabel}
+                  </p>
+                </Link>
+
+                <div className="p-7">
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {product.badges.slice(0, 2).map((badge) => (
+                      <span key={badge} className="rounded-full bg-[#1d4ed8]/10 px-3 py-1 text-xs font-bold text-[#1d4ed8]">
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+
+                  <h3 className="font-display text-2xl font-bold tracking-[-0.03em] text-[#2d2c2b]">
+                    {product.name}
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-relaxed text-[#44423f]">
+                    {product.shortDescription}
+                  </p>
+
+                  <ul className="mt-5 space-y-2">
+                    {product.applications.slice(0, 2).map((application) => (
+                      <li key={application} className="flex items-center gap-2 text-xs font-semibold text-[#2d2c2b]">
+                        <Check aria-hidden="true" className="size-3.5 text-[#1d4ed8]" />
+                        {application}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="px-7 pb-7">
+                <Link
+                  href={`/products/${product.slug}`}
+                  className="button-pill-dark w-full text-center"
+                >
+                  <span>View Product Details</span>
+                  <ArrowUpRight className="size-4 ml-1" />
+                </Link>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+
+        {!filteredProducts.length && (
+          <div className="mt-8 rounded-[24px] border border-dashed border-[#c6c1b9] bg-white p-12 text-center">
+            <p className="font-display text-xl font-bold text-[#2d2c2b]">No products in this category yet.</p>
+            <button type="button" onClick={() => chooseCategory("all")} className="button-pill-blue mt-4">
+              View All Products
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
 }
+

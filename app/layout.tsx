@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans, Outfit, Bebas_Neue } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap" });
+const bebas = Bebas_Neue({ weight: "400", subsets: ["latin"], variable: "--font-bebas", display: "swap" });
 
 export async function generateMetadata(): Promise<Metadata> {
   const { companyDetails } = await import("@/config/companyDetails");
@@ -48,10 +50,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={`${inter.variable} ${jakarta.variable} bg-canvas font-sans text-ink antialiased`}>
+      <body className={`${inter.variable} ${jakarta.variable} ${outfit.variable} ${bebas.variable} bg-canvas font-sans text-ink antialiased`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, "\\u003c") }} />
         {children}
       </body>
     </html>
   );
 }
+
+
