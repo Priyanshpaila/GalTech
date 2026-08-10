@@ -27,10 +27,21 @@ function Counter({ stat, index }: { stat: Statistic; index: number }) {
   }, [index, reduceMotion, stat.value, visible]);
 
   return (
-    <motion.div ref={target} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.4 }} transition={{ duration: 0.45, delay: index * 0.06 }} className="border-t border-slate-200 pt-5">
-      <p className="font-display text-4xl font-semibold tracking-[-0.06em] text-navy sm:text-5xl" aria-label={`${stat.value}${stat.suffix} ${stat.label}`}>{value}{stat.suffix}</p>
-      <h2 className="mt-2 text-sm font-bold text-ink">{stat.label}</h2>
-      <p className="mt-1.5 text-sm leading-5 text-muted">{stat.description}</p>
+    <motion.div
+      ref={target}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.45, delay: index * 0.06 }}
+      className="headspace-card flex flex-col justify-between"
+    >
+      <div>
+        <p className="font-display text-4xl sm:text-5xl font-extrabold tracking-[-0.04em] text-[#1d4ed8]" aria-label={`${stat.value}${stat.suffix} ${stat.label}`}>
+          {value}{stat.suffix}
+        </p>
+        <h3 className="mt-2 font-display text-base font-bold text-[#2d2c2b] capitalize">{stat.label}</h3>
+        <p className="mt-2 text-xs leading-relaxed text-[#44423f]">{stat.description}</p>
+      </div>
     </motion.div>
   );
 }
@@ -48,13 +59,20 @@ export default function StatsSection() {
     };
   }, []);
 
-  if (!stats.length) return <section className="h-72 bg-white" aria-hidden="true" />;
+  if (!stats.length) return <section className="h-72 bg-[#f9f6f0]" aria-hidden="true" />;
 
   return (
-    <section className="bg-white py-16 sm:py-20" aria-label="GALTech at a glance">
-      <div className="page-shell grid gap-x-8 gap-y-9 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => <Counter key={stat.label} stat={stat} index={index} />)}
+    <section className="bg-[#f9f6f0] py-16 sm:py-20 border-b border-[#e2ded9]" aria-label="GALTech at a glance">
+      <div className="page-shell">
+        <div className="text-center mb-10">
+          <p className="eyebrow mb-2">GALTech at a glance</p>
+          <h2 className="section-title mx-auto">Impact built on years of experience.</h2>
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {stats.map((stat, index) => <Counter key={stat.label} stat={stat} index={index} />)}
+        </div>
       </div>
     </section>
   );
 }
+
